@@ -1,0 +1,36 @@
+# Copyright 2012-2016 splinter authors. All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+sudo: required
+before_install:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - ./.travis.chrome.sh
+cache: pip
+language: python
+python:
+  - "2.7"
+  - "3.4"
+env:
+  - DJANGO_VERSION=1.7.11 DRIVER=tests/test_djangoclient.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_djangoclient.py
+  - DJANGO_VERSION=1.9 DRIVER=tests/test_djangoclient.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_flaskclient.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_webdriver_remote.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_webdriver_firefox.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_zopetestbrowser.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_webdriver_phantomjs.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_webdriver_chrome.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_browser.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_element_list.py
+  - DJANGO_VERSION=1.8.7 DRIVER=tests/test_request_handler.py
+matrix:
+  exclude:
+    - python: 3.4
+      env: DRIVER=tests/test_zopetestbrowser.py
+install:
+  - export PATH=$HOME:$PATH
+  - ./travis-install.bash
+  - make dependencies
+script: ./run_tests.py -w ${DRIVER}
